@@ -2,6 +2,9 @@ body {
     background: #1b1b1b;
     color: white;
 }
+body.no-scroll {
+    overflow: hidden;
+}
 
 canvas {
     border: 4px solid white;
@@ -10,22 +13,126 @@ canvas {
     cursor: url("../img/cursor.png"), auto;
 }
 
+
+/* NAVBAR ULTRA COMPACTO */
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 10000;
+
+    padding: 0px 12px;     /* MUY pequeño */
+    height: 40px;          /* altura fija */
+    display: flex;
+    align-items: center;
+}
+
+/* Glass más sutil */
+.glass-navbar {
+    background: rgba(0, 0, 0, 0.45); /* menos pesado */
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Texto compacto */
+.navbar-brand {
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar div {
+    font-size: 16px;
+    margin: 0;             /* CRUCIAL: Elimina márgenes que empujan el texto */
+    padding: 0;
+    line-height: 40px;     /* OPCIONAL: Igualar a la altura del navbar */
+    display: flex;         /* Para alinear íconos y texto internamente */
+    align-items: center;
+}
+
+/* FOOTER FIJO */
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 10000;
+}
+
+/* Espacio para que el contenido no quede tapado */
+.container-fluid {
+    margin-top: 45px;  /* EXACTO al alto del navbar */
+    margin-bottom: 60px;
+}
+
+/* ===== TARJETAS ===== */
 .card {
-    background: #2b2b2b;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(12px);
+    border-radius: 15px;
+    border: 1px solid rgba(255,255,255,0.2);
     color: white;
+}
+
+/* ===== INTRO MEJORADA ===== */
+.contenidoInicio {
+    position: relative;
+    width: 55%;
+    max-width: 600px;
+    background: radial-gradient(circle, #001a1a, #000000);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    color: #00ffcc;
+    font-family: monospace;
+
+    /* brillo */
+    box-shadow:
+        0 0 20px rgba(0,255,200,0.3),
+        inset 0 0 30px rgba(0,255,200,0.2);
+
+    overflow: hidden;
+}
+
+/* LISTA CENTRADA */
+.instrucciones ul {
+    list-style: none;
+    padding: 0;
+}
+
+.instrucciones {
+    margin-top: 20px;
+    font-size: 17px;
+    line-height: 1.6;
+}
+
+.instrucciones li {
+    margin: 12px 0;
+    font-size: 18px;
+    text-align: center;
+}
+
+/* BOTON MÁS BONITO */
+button {
+    border-radius: 20px !important;
+}
+
+/* ANIMACION SUAVE GENERAL */
+* {
+    transition: all 0.3s ease;
 }
 
 /* PANTALLA INTRO */
 #pantallaInicio {
     position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: 100%;
+    height: 100vh; /* IMPORTANTE */
+    overflow: hidden; /* EVITA SCROLL INTERNO */
     background: url("../img/fondo_inicio.jpg") no-repeat center center/cover;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 9999;
-    transition: opacity 1s ease;
 }
 
 /* Permite cambiar fácil la imagen */
@@ -41,41 +148,38 @@ canvas {
     background: rgba(0,0,0,0.7);
 }
 
-/* Caja estilo retro */
-.contenidoInicio {
-    position: relative;
-    width: 60%;
-    max-width: 600px;
-    background: black;
-    padding: 30px;
-    border-radius: 10px;
-    text-align: center;
-    color: #00ffcc;
-    font-family: monospace;
-    overflow: hidden;
-}
-
-/* Líneas tipo TV */
 .contenidoInicio::before {
     content: "";
     position: absolute;
     width: 100%;
     height: 100%;
+
     background: repeating-linear-gradient(
         to bottom,
-        rgba(255,255,255,0.05),
-        rgba(255,255,255,0.05) 2px,
+        rgba(255,255,255,0.04),
+        rgba(255,255,255,0.04) 2px,
         transparent 2px,
         transparent 4px
     );
+
+    animation: flicker 0.15s infinite;
     pointer-events: none;
 }
 
-/* Texto */
-.instrucciones {
-    margin-top: 15px;
-    font-size: 18px;
-    min-height: 120px;
+/* Parpadeo */
+@keyframes flicker {
+    0% { opacity: 0.9; }
+    50% { opacity: 1; }
+    100% { opacity: 0.9; }
+}
+
+.contenidoInicio::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    border: 2px solid rgba(0,255,200,0.3);
+    pointer-events: none;
 }
 
 /* Mensaje final */
@@ -98,3 +202,4 @@ canvas {
     opacity: 0;
     pointer-events: none;
 }
+

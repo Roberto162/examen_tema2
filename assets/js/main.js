@@ -11,13 +11,19 @@ const btnComenzar = document.getElementById("btnComenzar");
 const pantallaInicio = document.getElementById("pantallaInicio");
 const sonidoIntro = document.getElementById("sonidoIntro");
 
-const texto = `Tu misión es limpiar la ciudad.
+const texto = `
+    Haz clic en la basura para ganar puntos
 
-Haz clic en la basura para ganar puntos.
-⚠️ Evita los vidrios o perderás salud.
-❤️ Encuentra botiquines para recuperarte.
+    ⚠️ Evita los vidrios o perderás salud
+    ❤️ Los botiquines recuperan vida
+    🎯 Sé rápido, cada vez aparecerán más objetos
+    💀 Pierdes si tu salud llega a 0
+`;
 
-Si tu salud llega a 0... el mundo pierde.`;
+// Seleccionamos el párrafo de instrucciones y le aplicamos el estilo
+const pInstrucciones = document.querySelector('.instrucciones');
+pInstrucciones.style.whiteSpace = "pre-line"; 
+
 
 // EFECTO MAQUINA DE ESCRIBIR
 let i = 0;
@@ -26,7 +32,7 @@ function escribirTexto() {
     if (i < texto.length) {
         textoIntro.innerHTML += texto.charAt(i);
         i++;
-        setTimeout(escribirTexto, 30);
+        setTimeout(escribirTexto, 15);
     } else {
         mostrarMensajeFinal();
     }
@@ -40,19 +46,20 @@ function mostrarMensajeFinal() {
     }, 1000);
 }
 
-// INICIAR INTRO
 window.onload = () => {
+    document.body.classList.add("no-scroll"); // bloquear scroll
     escribirTexto();
 };
 
-// BOTON COMENZAR
 btnComenzar.addEventListener("click", () => {
 
-    // Fade out
     pantallaInicio.classList.add("fade-out");
 
     setTimeout(() => {
         pantallaInicio.style.display = "none";
+
+        document.body.classList.remove("no-scroll"); // activar scroll
+
         iniciarJuego();
     }, 1000);
 });

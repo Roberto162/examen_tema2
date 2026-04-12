@@ -63,6 +63,44 @@ canvas {
     margin-bottom: 60px;
 }
 
+/* TITULO PRINCIPAL */
+.tituloJuego {
+    position: absolute;
+    top: 60px; /* debajo del navbar */
+    width: 100%;
+    text-align: center;
+
+    font-size: 48px;
+    font-weight: bold;
+    color: #00ffe0;
+    font-family: 'Arial Black', sans-serif;
+    letter-spacing: 3px;
+
+    /* EFECTO 3D */
+    text-shadow:
+        2px 2px 0 #008f7a,
+        4px 4px 0 #005f54,
+        6px 6px 10px rgba(0,0,0,0.8);
+
+    z-index: 10000;
+
+    animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        text-shadow:
+            2px 2px 0 #008f7a,
+            4px 4px 0 #005f54,
+            0 0 10px #00ffe0;
+    }
+    to {
+        text-shadow:
+            2px 2px 0 #008f7a,
+            4px 4px 0 #005f54,
+            0 0 25px #00ffe0;
+    }
+}
 /* ===== TARJETAS ===== */
 .card {
     background: rgba(255,255,255,0.08);
@@ -75,14 +113,15 @@ canvas {
 /* ===== INTRO MEJORADA ===== */
 .contenidoInicio {
     position: relative;
-    width: 55%;
-    max-width: 600px;
+    width: 45%;
+    max-width: 700px;
     background: radial-gradient(circle, #001a1a, #000000);
-    padding: 40px;
-    border-radius: 20px;
+    padding: 25px;
+    border-radius: 0px;
     text-align: center;
     color: #00ffcc;
     font-family: monospace;
+    margin-top: 45px;
 
     /* brillo */
     box-shadow:

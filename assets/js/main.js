@@ -11,8 +11,7 @@ const btnComenzar = document.getElementById("btnComenzar");
 const pantallaInicio = document.getElementById("pantallaInicio");
 const sonidoIntro = document.getElementById("sonidoIntro");
 
-const texto = `
-    Haz clic en la basura para ganar puntos
+const texto = `Haz clic en la basura para ganar puntos
 
     ⚠️ Evita los vidrios o perderás salud
     ❤️ Los botiquines recuperan vida

@@ -1,5 +1,30 @@
 const canvas = document.getElementById("canvasJuego");
 const ctx = canvas.getContext("2d");
+const fondo = new Image();
+fondo.src = "/assets/img/fondojuego.jpg";
+const imagenes = {
+
+    basura: [
+        cargarImagen("./assets/img/manzana.png"),
+        cargarImagen("./assets/img/platano.png"),
+        cargarImagen("./assets/img/plastico.png")
+    ],
+
+    grupo: cargarImagen("./assets/img/bolsa_basura.png"),
+
+    vidrio: [
+        cargarImagen("./assets/img/peligro.png"),
+        cargarImagen("./assets/img/peligro2.png")
+    ],
+
+    botiquin: cargarImagen("./assets/img/botiquin.png")
+};
+
+function cargarImagen(src) {
+    const img = new Image();
+    img.src = src;
+    return img;
+}
 
 let objetos = [];
 let score = 0;
@@ -71,6 +96,7 @@ btnComenzar.addEventListener("click", () => {
 
 // FUNCION BASE DEL JUEGO
 function iniciarJuego() {
+     document.body.classList.add("jugando"); // 👈 activa modo juego
     gameLoop();
 }
 
@@ -78,32 +104,55 @@ function iniciarJuego() {
 function crearObjeto() {
 
     let tipo;
-
-    // Probabilidades
     let rand = Math.random();
 
-    if (rand < 0.7) tipo = "basura";
-    else if (rand < 0.9) tipo = "vidrio";
+    if (rand < 0.65) tipo = "basura";
+    else if (rand < 0.85) tipo = "vidrio";
+    else if (rand < 0.95) tipo = "grupo";
     else tipo = "botiquin";
+
+    let img;
+
+    if (tipo === "basura") {
+        img = imagenes.basura[Math.floor(Math.random() * imagenes.basura.length)];
+    }
+
+    if (tipo === "vidrio") {
+        img = imagenes.vidrio[Math.floor(Math.random() * imagenes.vidrio.length)];
+    }
+
+    if (tipo === "grupo") {
+        img = imagenes.grupo;
+    }
+
+    if (tipo === "botiquin") {
+        img = imagenes.botiquin;
+    }
 
     let objeto = {
         x: Math.random() * canvas.width,
         y: -20,
+        vx: (Math.random() * 0.6 - 0.3),
         vy: Math.random() * 0.5 + 0.8 + (nivel * 0.2),
-vx: (Math.random() * 0.6 - 0.3),
-        size: 30,
-        tipo: tipo
+        size: tipo === "grupo" ? 60 : 45, // grupo más grande 👀
+        tipo: tipo,
+        img: img,
+
+        viento: Math.random() < 0.4,
+        curva: Math.random() * 0.05
     };
 
     objetos.push(objeto);
 }
 function dibujarObjeto(obj) {
 
-    ctx.font = "24px Arial";
-
-    if (obj.tipo === "basura") ctx.fillText("🗑️", obj.x, obj.y);
-    if (obj.tipo === "vidrio") ctx.fillText("⚠️", obj.x, obj.y);
-    if (obj.tipo === "botiquin") ctx.fillText("❤️", obj.x, obj.y);
+    ctx.drawImage(
+        obj.img,
+        obj.x,
+        obj.y,
+        obj.size,
+        obj.size
+    );
 }
 function actualizarObjetos() {
 
@@ -140,9 +189,16 @@ canvas.addEventListener("click", (e) => {
         ) {
 
             // ACCIONES SEGÚN TIPO
-            if (obj.tipo === "basura") score += 10;
-            if (obj.tipo === "vidrio") salud -= 15;
-            if (obj.tipo === "botiquin") salud += 10;
+           if (obj.tipo === "basura") score += 10;
+
+if (obj.tipo === "grupo") score += 25; // más puntos 🔥
+
+if (obj.tipo === "vidrio") salud -= 15;
+
+if (obj.tipo === "botiquin") {
+    salud += 15;
+    if (salud > 100) salud = 100;
+}
 
             objetos.splice(index, 1);
         }
@@ -153,6 +209,7 @@ function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     actualizarObjetos();
+    actualizarNivel();
 
     objetos.forEach(obj => dibujarObjeto(obj));
 
@@ -162,37 +219,27 @@ function gameLoop() {
 
     requestAnimationFrame(gameLoop);
 }
-setInterval(() => {
-
-    crearObjeto();
-
-}, 1000 - (nivel * 100)); // más rápido en niveles altos
-
-setInterval(() => {
-
-    nivel++;
-
-}, 10000); // cada 10 segundos sube nivel
 
 function dibujarHUD() {
 
-    // Fondo más elegante
+    // Fondo
     ctx.fillStyle = "rgba(0,0,0,0.5)";
-    ctx.fillRect(10, 10, 120, 60);
+    ctx.fillRect(10, 10, 150, 80);
 
-    // Texto más pequeño
+    // Texto principal (más grande)
     ctx.fillStyle = "#00ffe0";
-    ctx.font = "11px Orbitron";
+    ctx.font = "13px Orbitron";
 
-    ctx.fillText("Score: " + score, 15, 25);
-    ctx.fillText("Record: " + record, 15, 40);
+    ctx.fillText("Nivel: " + nivel, 15, 25);
+    ctx.fillText("Score: " + score, 15, 40);
+    ctx.fillText("Record: " + record, 15, 55);
 
     // Barra de vida
     ctx.fillStyle = "#333";
-    ctx.fillRect(15, 48, 90, 5);
+    ctx.fillRect(15, 65, 110, 6);
 
     ctx.fillStyle = "#00ff00";
-    ctx.fillRect(15, 48, salud * 0.9, 5);
+    ctx.fillRect(15, 65, salud * 1.1, 6);
 }
 
 function ajustarCanvas() {
@@ -201,7 +248,7 @@ function ajustarCanvas() {
     const footer = 60;
 
     canvas.width = window.innerWidth * 0.95;
-    canvas.height = window.innerHeight - navbar - footer;
+    canvas.height = window.innerHeight - navbar - footer-35;
 }
 
 window.addEventListener("resize", ajustarCanvas);
@@ -209,3 +256,20 @@ ajustarCanvas();
 
 window.addEventListener("resize", ajustarCanvas);
 ajustarCanvas();
+
+function actualizarNivel() {
+    nivel = Math.floor(score / 200) + 1;
+}
+
+function generarObjetos() {
+
+    let cantidad = 1 + Math.floor(nivel / 2); 
+    // nivel 1 → 1 objeto
+    // nivel 4 → 3 objetos
+
+    for (let i = 0; i < cantidad; i++) {
+        crearObjeto();
+    }
+}
+
+setInterval(generarObjetos, 1200);

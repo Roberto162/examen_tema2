@@ -65,10 +65,18 @@ canvas {
 
 /* FOOTER FIJO */
 .footer {
-    position: relative;
+    position: fixed;
     bottom: 0;
     width: 100%;
-    z-index: 1;
+    z-index: 10001;
+
+    background: rgba(0, 0, 0, 0.7); /* 👈 fondo negro transparente */
+    backdrop-filter: blur(6px);     /* 👈 efecto vidrio */
+    
+    border-top: 1px solid rgba(255,255,255,0.2);
+
+    padding: 5px 0;
+    font-size: 14px;
 }
 body.jugando .footer {
     position: relative;
@@ -82,6 +90,7 @@ body.jugando {
 .container-fluid {
     margin-top: 10px;
     margin-bottom: 10px; /* 👈 reduce espacio inferior */
+    
 }
 
 /* TITULO PRINCIPAL */
@@ -202,10 +211,8 @@ button {
 
 /* Oscurecer fondo */
 .overlay {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.7);
+    pointer-events: none;
+    z-index: 1;
 }
 
 .contenidoInicio::before {
@@ -349,10 +356,6 @@ button {
     font-size: 22px;
     margin: 10px 0;
 }
-
-#pantallaFinal {
-    display: none; /* 🔥 CLAVE */
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
+body.fin-juego {
+    overflow: hidden;
 }

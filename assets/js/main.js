@@ -104,6 +104,7 @@ function iniciarJuego() {
     // 👇 OCULTAR TÍTULO SOLO EN JUEGO
     const titulo = document.querySelector(".tituloGame");
     if (titulo) titulo.style.display = "none";
+    pantallaInicio.style.display = "none";
 
     document.body.classList.add("jugando");
 
@@ -405,6 +406,8 @@ function mostrarPantallaFinal() {
 
     detenerJuego();
 
+    document.body.classList.add("fin-juego"); // 🔥 CLAVE
+
     document.getElementById("pantallaFinal").style.display = "flex";
 
     document.getElementById("finalScore").textContent = "Score: " + score;
@@ -425,4 +428,3 @@ setTimeout(() => {
     }
 }, 500);
 
-pantallaInicio.style.display = "none";

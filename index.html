@@ -60,8 +60,23 @@
 
         <!-- CANVAS -->
         <div class="col-md-6 text-center">
+            
 
-            <canvas id="canvasJuego" width="800" height="500"></canvas>
+            <canvas id="canvasJuego">
+                <div id="hud">
+
+    <div>Score: <span id="score">0</span></div>
+    <div>Record: <span id="record">0</span></div>
+
+    <div class="vida">
+        ❤️
+        <div class="barra">
+            <div id="saludBarra"></div>
+        </div>
+    </div>
+
+</div>
+            </canvas>
 
         </div>
 

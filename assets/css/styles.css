@@ -12,6 +12,17 @@ canvas {
     background-size: cover;
     cursor: url("../img/cursor.png"), auto;
 }
+#canvasJuego {
+    width: 95vw;   /* casi todo el ancho */
+    height: 80vh;  /* alto grande */
+
+    display: block;
+    margin: auto;
+
+    border: 3px solid #00ffe0;
+    background-image: url("../img/fondo.jpg");
+    background-size: cover;
+}
 
 
 /* NAVBAR ULTRA COMPACTO */
@@ -242,3 +253,35 @@ button {
     pointer-events: none;
 }
 
+
+#hud {
+    position: absolute;
+    top: 60px;
+    left: 20px;
+
+    color: #00ffe0;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
+
+    background: rgba(0,0,0,0.5);
+    padding: 10px;
+    border-radius: 10px;
+
+    z-index: 1000;
+}
+
+/* Barra de vida */
+.barra {
+    width: 100px;
+    height: 8px;
+    background: #333;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+#saludBarra {
+    height: 100%;
+    background: #00ff00;
+    width: 100%;
+}

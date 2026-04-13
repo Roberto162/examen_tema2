@@ -25,12 +25,14 @@ function cargarImagen(src) {
     img.src = src;
     return img;
 }
-
+let fuegos = [];
 let objetos = [];
 let score = 0;
 let salud = 100;
 let nivel = 1;
 let tiempo = 0;
+let juegoActivo = false;
+let intervaloObjetos;
 
 const gravedadBase = 2;
 
@@ -44,7 +46,7 @@ const sonidoIntro = document.getElementById("sonidoIntro");
 
 const texto = `Haz clic en la basura para ganar puntos
 
-    ⚠️ Evita los vidrios o perderás salud
+    ⚠️ Evita los objetos radioactivos o perderás salud
     ❤️ Los botiquines recuperan vida
     🎯 Sé rápido, cada vez aparecerán más objetos
     💀 Pierdes si tu salud llega a 0
@@ -103,7 +105,22 @@ function iniciarJuego() {
     const titulo = document.querySelector(".tituloGame");
     if (titulo) titulo.style.display = "none";
 
+    document.body.classList.add("jugando");
+
+    juegoActivo = true;
+
+    // 👇 INICIAR GENERACIÓN
+    intervaloObjetos = setInterval(generarObjetos, 1200);
+
+
     gameLoop();
+}
+function detenerJuego() {
+    juegoActivo = false;
+
+    clearInterval(intervaloObjetos);
+
+    objetos = []; // 👈 limpia pantalla
 }
 
 //Logica del juego
@@ -171,11 +188,16 @@ function actualizarObjetos() {
         // Si toca el suelo
         if (obj.y > canvas.height) {
 
-            if (obj.tipo === "basura") salud -= 5;
-            if (obj.tipo === "vidrio") salud -= 10;
+    // SOLO basura daña
+    if (obj.tipo === "basura" || obj.tipo === "grupo") {
+    salud -= 5;
+}
 
-            objetos.splice(index, 1);
-        }
+    // efecto fuego 🔥
+    crearFuego(obj.x, canvas.height - 10);
+
+    objetos.splice(index, 1);
+}
     });
 }
 
@@ -212,6 +234,10 @@ if (obj.tipo === "botiquin") {
 });
 function gameLoop() {
 
+    if (!juegoActivo) return;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     ctx.drawImage(fondo, 0, 0, canvas.width, canvas.height);
 
     actualizarObjetos();
@@ -219,7 +245,11 @@ function gameLoop() {
 
     objetos.forEach(obj => dibujarObjeto(obj));
 
-    dibujarHUD(); // 👈 AHORA VA AQUÍ
+    // 🔥 FUEGO
+    actualizarFuego();
+    dibujarFuego();
+
+    dibujarHUD();
 
     tiempo++;
 
@@ -269,13 +299,61 @@ function actualizarNivel() {
 
 function generarObjetos() {
 
-    let cantidad = 1 + Math.floor(nivel / 2); 
-    // nivel 1 → 1 objeto
-    // nivel 4 → 3 objetos
+    if (!juegoActivo) return;
+
+    if (objetos.length > 25) return; // 👈 límite anti acumulación
+
+    let cantidad = 1 + Math.floor(nivel / 2);
 
     for (let i = 0; i < cantidad; i++) {
         crearObjeto();
     }
 }
 
-setInterval(generarObjetos, 1200);
+function crearFuego(x, y) {
+    for (let i = 0; i < 8; i++) {
+        fuegos.push({
+            x: x,
+            y: y,
+            vx: (Math.random() - 0.5) * 2,
+            vy: Math.random() * -2,
+            size: Math.random() * 6 + 4,
+            vida: 30
+        });
+    }
+}
+function actualizarFuego() {
+
+    fuegos.forEach((f, i) => {
+        f.x += f.vx;
+        f.y += f.vy;
+        f.vida--;
+
+        if (f.vida <= 0) {
+            fuegos.splice(i, 1);
+        }
+    });
+}
+function dibujarFuego() {
+
+    fuegos.forEach(f => {
+
+        ctx.fillStyle = "orange";
+
+        ctx.beginPath();
+        ctx.arc(f.x, f.y, f.size, 0, Math.PI * 2);
+        ctx.fill();
+    });
+}
+
+document.addEventListener("visibilitychange", () => {
+
+    if (document.hidden) {
+        // 🔴 Usuario se fue
+        clearInterval(intervaloObjetos);
+    } else {
+        // 🟢 Usuario volvió
+        intervaloObjetos = setInterval(generarObjetos, 1200);
+    }
+
+});

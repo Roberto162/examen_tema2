@@ -25,6 +25,8 @@ function cargarImagen(src) {
     img.src = src;
     return img;
 }
+
+let record = localStorage.getItem("record") || 0;
 let fuegos = [];
 let objetos = [];
 let score = 0;
@@ -33,10 +35,8 @@ let nivel = 1;
 let tiempo = 0;
 let juegoActivo = false;
 let intervaloObjetos;
-
+let efectos = [];
 const gravedadBase = 2;
-
-let record = 0;
 
 const textoIntro = document.getElementById("textoIntro");
 const mensajeFinal = document.getElementById("mensajeFinal");
@@ -216,6 +216,8 @@ canvas.addEventListener("click", (e) => {
             mouseY < obj.y + obj.size
         ) {
 
+            crearImpacto(obj.x + obj.size / 2, obj.y + obj.size / 2);
+
             // ACCIONES SEGÚN TIPO
            if (obj.tipo === "basura") score += 10;
 
@@ -245,9 +247,16 @@ function gameLoop() {
 
     objetos.forEach(obj => dibujarObjeto(obj));
 
+    if (salud <= 0) {
+    mostrarPantallaFinal();
+    return;
+}
+
     // 🔥 FUEGO
     actualizarFuego();
     dibujarFuego();
+    actualizarImpacto();
+dibujarImpacto();
 
     dibujarHUD();
 
@@ -276,6 +285,11 @@ function dibujarHUD() {
 
     ctx.fillStyle = "#00ff00";
     ctx.fillRect(15, 78, salud * 1.2, 8);
+
+    if (score > record) {
+    record = score;
+    localStorage.setItem("record", record);
+}
 }
 
 function ajustarCanvas() {
@@ -286,9 +300,6 @@ function ajustarCanvas() {
     canvas.width = window.innerWidth * 0.97;
     canvas.height = window.innerHeight - navbar - footer - 6; // 👈 menos espacio
 }
-
-window.addEventListener("resize", ajustarCanvas);
-ajustarCanvas();
 
 window.addEventListener("resize", ajustarCanvas);
 ajustarCanvas();
@@ -357,3 +368,61 @@ document.addEventListener("visibilitychange", () => {
     }
 
 });
+
+function crearImpacto(x, y) {
+
+    for (let i = 0; i < 10; i++) {
+        efectos.push({
+            x: x,
+            y: y,
+            vx: (Math.random() - 0.5) * 4,
+            vy: (Math.random() - 0.5) * 4,
+            size: Math.random() * 5 + 3,
+            vida: 20
+        });
+    }
+}
+function actualizarImpacto() {
+    efectos.forEach((e, i) => {
+        e.x += e.vx;
+        e.y += e.vy;
+        e.vida--;
+
+        if (e.vida <= 0) efectos.splice(i, 1);
+    });
+}
+
+function dibujarImpacto() {
+    efectos.forEach(e => {
+        ctx.fillStyle = `rgba(0,255,200,${e.vida / 20})`;
+        ctx.beginPath();
+        ctx.arc(e.x, e.y, e.size, 0, Math.PI * 2);
+        ctx.fill();
+    });
+}
+
+function mostrarPantallaFinal() {
+
+    detenerJuego();
+
+    document.getElementById("pantallaFinal").style.display = "flex";
+
+    document.getElementById("finalScore").textContent = "Score: " + score;
+    document.getElementById("finalRecord").textContent = "Record: " + record;
+}
+
+document.getElementById("btnReiniciar").addEventListener("click", () => {
+
+    location.reload(); // fácil y seguro
+});
+
+setTimeout(() => {
+    const btn = document.getElementById("btnReiniciar");
+    if (btn) {
+        btn.addEventListener("click", () => {
+            location.reload();
+        });
+    }
+}, 500);
+
+pantallaInicio.style.display = "none";

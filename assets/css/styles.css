@@ -8,16 +8,16 @@ body.no-scroll {
 
 canvas {
     border: 4px solid white;
-    background-image: url("../img/fondo.jpg");
     background-size: cover;
-    cursor: url("../img/cursor.png") 12 12, auto;
+    cursor: url("../img/cursor.png") 13 13, auto;
 }
 
+
 #canvasJuego {
-    width: 95vw;
+    width: 97vw;
 
     /* RESTAMOS NAVBAR + FOOTER */
-    height: calc(100vh - 100px);
+    height: 100%;
 
     display: block;
     margin: auto;
@@ -68,7 +68,7 @@ canvas {
     position: relative;
     bottom: 0;
     width: 100%;
-    z-index: 10000;
+    z-index: 1;
 }
 body.jugando .footer {
     position: relative;
@@ -80,9 +80,8 @@ body.jugando {
 
 /* Espacio para que el contenido no quede tapado */
 .container-fluid {
-    margin-top: 45px;  /* EXACTO al alto del navbar */
-    margin-bottom: 60px;
-    padding-top: 0; /* 👈 QUITA espacio extra */
+    margin-top: 10px;
+    margin-bottom: 10px; /* 👈 reduce espacio inferior */
 }
 
 /* TITULO PRINCIPAL */

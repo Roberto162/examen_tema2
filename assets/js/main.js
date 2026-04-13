@@ -1,7 +1,7 @@
 const canvas = document.getElementById("canvasJuego");
 const ctx = canvas.getContext("2d");
 const fondo = new Image();
-fondo.src = "/assets/img/fondojuego.jpg";
+fondo.src = "./assets/img/fondo_juego.avif";
 const imagenes = {
 
     basura: [
@@ -96,7 +96,13 @@ btnComenzar.addEventListener("click", () => {
 
 // FUNCION BASE DEL JUEGO
 function iniciarJuego() {
-     document.body.classList.add("jugando"); // 👈 activa modo juego
+
+    document.body.classList.add("jugando");
+
+    // 👇 OCULTAR TÍTULO SOLO EN JUEGO
+    const titulo = document.querySelector(".tituloGame");
+    if (titulo) titulo.style.display = "none";
+
     gameLoop();
 }
 
@@ -206,7 +212,7 @@ if (obj.tipo === "botiquin") {
 });
 function gameLoop() {
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(fondo, 0, 0, canvas.width, canvas.height);
 
     actualizarObjetos();
     actualizarNivel();
@@ -224,31 +230,31 @@ function dibujarHUD() {
 
     // Fondo
     ctx.fillStyle = "rgba(0,0,0,0.5)";
-    ctx.fillRect(10, 10, 150, 80);
+    ctx.fillRect(10, 10, 170, 90);
 
-    // Texto principal (más grande)
+    // 👇 TEXTO MÁS GRANDE
     ctx.fillStyle = "#00ffe0";
-    ctx.font = "13px Orbitron";
+    ctx.font = "16px Orbitron";
 
-    ctx.fillText("Nivel: " + nivel, 15, 25);
-    ctx.fillText("Score: " + score, 15, 40);
-    ctx.fillText("Record: " + record, 15, 55);
+    ctx.fillText("Nivel: " + nivel, 15, 30);
+    ctx.fillText("Score: " + score, 15, 50);
+    ctx.fillText("Record: " + record, 15, 70);
 
     // Barra de vida
     ctx.fillStyle = "#333";
-    ctx.fillRect(15, 65, 110, 6);
+    ctx.fillRect(15, 78, 120, 8);
 
     ctx.fillStyle = "#00ff00";
-    ctx.fillRect(15, 65, salud * 1.1, 6);
+    ctx.fillRect(15, 78, salud * 1.2, 8);
 }
 
 function ajustarCanvas() {
 
-    const navbar = 40;
+    const navbar = 60;
     const footer = 60;
 
-    canvas.width = window.innerWidth * 0.95;
-    canvas.height = window.innerHeight - navbar - footer-35;
+    canvas.width = window.innerWidth * 0.97;
+    canvas.height = window.innerHeight - navbar - footer - 6; // 👈 menos espacio
 }
 
 window.addEventListener("resize", ajustarCanvas);

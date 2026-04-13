@@ -89,8 +89,8 @@ function crearObjeto() {
     let objeto = {
         x: Math.random() * canvas.width,
         y: -20,
-        vx: Math.random() * 2 - 1,
-        vy: Math.random() * 2 + gravedadBase + nivel,
+        vy: Math.random() * 0.5 + 0.8 + (nivel * 0.2),
+vx: (Math.random() * 0.6 - 0.3),
         size: 30,
         tipo: tipo
     };
@@ -156,7 +156,7 @@ function gameLoop() {
 
     objetos.forEach(obj => dibujarObjeto(obj));
 
-    actualizarUI(); // 👈 AQUÍ
+    dibujarHUD(); // 👈 AHORA VA AQUÍ
 
     tiempo++;
 
@@ -174,23 +174,38 @@ setInterval(() => {
 
 }, 10000); // cada 10 segundos sube nivel
 
-function actualizarUI() {
+function dibujarHUD() {
 
-    document.getElementById("score").innerText = score;
+    // Fondo más elegante
+    ctx.fillStyle = "rgba(0,0,0,0.5)";
+    ctx.fillRect(10, 10, 120, 60);
 
-    let barra = document.getElementById("saludBarra");
-    barra.style.width = salud + "%";
+    // Texto más pequeño
+    ctx.fillStyle = "#00ffe0";
+    ctx.font = "11px Orbitron";
 
-    if (salud <= 0) {
-        alert("GAME OVER");
-        location.reload();
-    }
+    ctx.fillText("Score: " + score, 15, 25);
+    ctx.fillText("Record: " + record, 15, 40);
+
+    // Barra de vida
+    ctx.fillStyle = "#333";
+    ctx.fillRect(15, 48, 90, 5);
+
+    ctx.fillStyle = "#00ff00";
+    ctx.fillRect(15, 48, salud * 0.9, 5);
 }
 
 function ajustarCanvas() {
+
+    const navbar = 40;
+    const footer = 60;
+
     canvas.width = window.innerWidth * 0.95;
-    canvas.height = window.innerHeight * 0.80;
+    canvas.height = window.innerHeight - navbar - footer;
 }
+
+window.addEventListener("resize", ajustarCanvas);
+ajustarCanvas();
 
 window.addEventListener("resize", ajustarCanvas);
 ajustarCanvas();

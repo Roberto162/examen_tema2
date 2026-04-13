@@ -10,11 +10,14 @@ canvas {
     border: 4px solid white;
     background-image: url("../img/fondo.jpg");
     background-size: cover;
-    cursor: url("../img/cursor.png"), auto;
+    cursor: url("../img/guante.png") 12 12, auto;
 }
+
 #canvasJuego {
-    width: 95vw;   /* casi todo el ancho */
-    height: 80vh;  /* alto grande */
+    width: 95vw;
+
+    /* RESTAMOS NAVBAR + FOOTER */
+    height: calc(100vh - 100px);
 
     display: block;
     margin: auto;
